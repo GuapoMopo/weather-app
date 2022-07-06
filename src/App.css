@@ -11,17 +11,18 @@ body {
   height: 70vh;
 }
 .weather-info{
-  background-color: rgb(10, 5, 53);
+  /* background-color: rgb(10, 5, 53); */
   width: 25%;
   padding: 50px 0 0 100px;
 }
 .weather-details{
-  background-color: rgb(21, 7, 85);
+  /* background-color: rgb(21, 7, 85); */
   width: 15%;
   padding: 20px 0 0 100px;
 }
 #searchLocation{
   display: flex;
+  margin-top: 10px;
 }
 #searchBoxInput::placeholder{
   color: whitesmoke;
@@ -53,7 +54,7 @@ body {
 }
 #date{
   font-family: 'Raleway', sans-serif;
-  margin-top: 10px;
+  margin-top: 2px;
   color: whitesmoke;
 }
 #time{
@@ -63,6 +64,7 @@ body {
 #location{
   font-family: 'Raleway', sans-serif;
   font-size: 20px;
+  margin-top: 5px;
   color: whitesmoke;
 }
 #temperature{

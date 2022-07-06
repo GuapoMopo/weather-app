@@ -1,25 +1,69 @@
+import { useEffect, useState } from 'react';
 import './App.css';
-// import background from './images/sunsetForest'
+
+
 function App() {
 
-  function searchLocation(e){
-    console.log(e.target.value);
+  const [overcast, setOvercast] = useState('');
+  const [location, setLocation] = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [temperature, setTemperature] = useState('');
+  const [feelsLike, setFeelsLike] = useState('');
+  const [humidity, setHumidity] = useState('');
+  const [rainChance, setRainChance] = useState('');
+  const [windSpeed, setWindSpeed] = useState('');
+
+
+  async function searchLocation(place){
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const weekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    console.log(place);
+    const response = await fetch('http://api.openweathermap.org/data/2.5/weather?q='+place+'&units=metric&APPID=9845c1876acc495a4a2bd8cafb81086a');
+    const locationData = await response.json();
+    setOvercast(locationData.weather[0].description);
+    setLocation(locationData.name);
+    
+    let d = new Date();
+    let localTime = d.getTime();
+    let localOffset = d.getTimezoneOffset() * 60000;
+    let utc = localTime + localOffset;
+    let cityTime = utc + (1000 * locationData.timezone);
+    let newDate = new Date(cityTime);
+    console.log(newDate)
+    let day = newDate.getDay();
+    let monthDay = newDate.getDate();
+    let month = newDate.getMonth();
+    let year = newDate.getFullYear();
+    let hours = newDate.getHours();
+    let minutes = newDate.getMinutes();
+    setDate(`${weekdays[day]}, ${months[month]} ${monthDay}, ${year}`);
+    setTime(`${hours}:${minutes}`);
+    setTemperature(locationData.main.temp);
+    setFeelsLike(locationData.main.feels_like);
+    setHumidity(locationData.main.humidity);
+    setRainChance();
+    setWindSpeed(locationData.wind.speed);
   }
+
+  useEffect(() => {
+    searchLocation('London');
+  },[]);
 
   return (
     <div className='body' style={{backgroundImage: 'url(/sunsetForest.jpg)'}}>
       <div className='top-content'>
         <div className='weather-info'>
-          <div id='weatherType'>Overcast</div>
-          <div id='location'>Location</div>
-          <div id='date'>Date</div>
-          <div id='time'>Time</div>
-          <div id='temperature'>Temperature</div>
+          <div id='weatherType'>{overcast}</div>
+          <div id='location'>{location}</div>
+          <div id='date'>{date}</div>
+          <div id='time'>{time}</div>
+          <div id='temperature'>{temperature}°C</div>
           <div id='searchLocation'>
             <input type='text' id='searchBoxInput' placeholder='Search Location...' 
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                searchLocation(e);
+                searchLocation(e.target.value);
               }
             }}
             />
@@ -28,11 +72,15 @@ function App() {
         </div>
         <div className='weather-details'>
             <div id='feelsLike'>Feels like
-              
+              <div>{feelsLike}°C</div>
             </div>
-            <div id='humidity'>Humidity</div>
+            <div id='humidity'>Humidity
+              <div>{humidity} %</div>
+            </div>
             <div id='rainChance'>Chance of Rain</div>
-            <div id='windSpeed'>Wind Speed</div>
+            <div id='windSpeed'>Wind Speed
+              <div>{windSpeed} km/h</div>
+            </div>
         </div>
       </div>
     </div>
