@@ -14,31 +14,38 @@ function App() {
   const [rainChance, setRainChance] = useState('');
   const [windSpeed, setWindSpeed] = useState('');
 
-
-  async function searchLocation(place){
+  function getCityDateTime(data){
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const weekdays = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-    console.log(place);
-    const response = await fetch('http://api.openweathermap.org/data/2.5/weather?q='+place+'&units=metric&APPID=9845c1876acc495a4a2bd8cafb81086a');
-    const locationData = await response.json();
-    setOvercast(locationData.weather[0].description);
-    setLocation(locationData.name);
-    
+    let result = {};
     let d = new Date();
     let localTime = d.getTime();
     let localOffset = d.getTimezoneOffset() * 60000;
     let utc = localTime + localOffset;
-    let cityTime = utc + (1000 * locationData.timezone);
+    let cityTime = utc + (1000 * data.timezone);
     let newDate = new Date(cityTime);
     console.log(newDate)
-    let day = newDate.getDay();
-    let monthDay = newDate.getDate();
-    let month = newDate.getMonth();
-    let year = newDate.getFullYear();
-    let hours = newDate.getHours();
-    let minutes = newDate.getMinutes();
-    setDate(`${weekdays[day]}, ${months[month]} ${monthDay}, ${year}`);
-    setTime(`${hours}:${minutes}`);
+    result = 
+    {
+      'day':weekdays[newDate.getDay()],
+      'monthDay':newDate.getDate(),
+      'month':months[newDate.getMonth()],
+      'year':newDate.getFullYear(),
+      'hours':newDate.getHours(),
+      'minutes':newDate.getMinutes()
+    }
+    return result;
+  }
+
+  async function searchLocation(place){
+    console.log(place);
+    const response = await fetch('http://api.openweathermap.org/data/2.5/weather?q='+place+'&units=metric&APPID=9845c1876acc495a4a2bd8cafb81086a');
+    const locationData = await response.json();
+    const dateData = getCityDateTime(locationData);
+    setOvercast(locationData.weather[0].description);
+    setLocation(locationData.name);
+    setDate(`${dateData.day}, ${dateData.month} ${dateData.monthDay}, ${dateData.year}`);
+    setTime(`${dateData.hours}:${dateData.minutes}`);
     setTemperature(locationData.main.temp);
     setFeelsLike(locationData.main.feels_like);
     setHumidity(locationData.main.humidity);
