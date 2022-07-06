@@ -39,7 +39,7 @@ function App() {
 
   async function searchLocation(place){
     console.log(place);
-    const response = await fetch('http://api.openweathermap.org/data/2.5/weather?q='+place+'&units=metric&APPID=9845c1876acc495a4a2bd8cafb81086a');
+    const response = await fetch('http://api.openweathermap.org/data/2.5/weather?q='+place+'&units=metric&APPID=');
     const locationData = await response.json();
     const dateData = getCityDateTime(locationData);
     setOvercast(locationData.weather[0].description);
